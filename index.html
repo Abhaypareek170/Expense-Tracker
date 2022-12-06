@@ -33,7 +33,7 @@
     </section>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
     <script>
-        function saveToLocalStorage(event){
+       async function saveToLocalStorage(event){
             event.preventDefault();
             const amount = event.target.amount.value;
             const desc = event.target.desc.value;
@@ -43,30 +43,33 @@
                 desc,
                 cat
             }
-            axios.post("https://crudcrud.com/api/ef6597bfc9024c76a32a8f406813ca22/expenseData",obj)
-                  .then((response)=>{
+
+            try
+            {
+                const response = await axios.post("https://crudcrud.com/api/2fd6dea27ae14dc687f4c0cda12d6d15/expenseData",obj)
+                  
                         showNewExpenseOnScreen(response.data)
-                        console.log(response);
-                    })
-                  .catch((err)=>{
+                        console.log(response);}
+                  catch{
                         document.body.innerHTML = document.body.innerHTML + "<h4>Something went wrong</h4>"
-                        console.log(err);
-                    })
+                        console.log("err");
+                    }
         
         
         }
-        window.addEventListener("DOMContentLoaded",()=>{        
-            axios.get("https://crudcrud.com/api/ef6597bfc9024c76a32a8f406813ca22/expenseData")
-                    .then((res)=>{
+        window.addEventListener("DOMContentLoaded",async()=>{        
+           try{
+        
+            const res = await axios.get("https://crudcrud.com/api/2fd6dea27ae14dc687f4c0cda12d6d15/expenseData")
+
                         console.log(res);
                         for(var i=0;i<res.data.length;i++){
                             showNewExpenseOnScreen(res.data[i])
                         }
-                    }) 
-                    .catch((err)=>{
-                        console.log(err);    
-                    
-                    })
+                    }
+                    catch{
+                        console.log("err");   
+                    }
                 })
             function showNewExpenseOnScreen(expense){
                 document.getElementById('amount').value = '';
@@ -91,16 +94,18 @@
                 document.getElementById('cat').value =cat;
                     deleteExpense(Id);
              }
-             function deleteExpense(Id){
-                 axios.delete(`https://crudcrud.com/api/ef6597bfc9024c76a32a8f406813ca22/expenseData/${Id}`)
-                    .then((res)=>{
+             async function deleteExpense(Id){
+             try{ const res = await  axios.delete(`https://crudcrud.com/api/2fd6dea27ae14dc687f4c0cda12d6d15/expenseData/${Id}`)
+                   
                         removeExpenseFromScreen(Id);        
-                    })
-                    .catch((err)=>{
-                        console.log(err);
-                    })
+                    }
+                    catch{
+                        console.log("err");
+                    }
+                
+                }
+                
 
-            }
 
             function removeExpenseFromScreen(Id){
                 const parentNode = document.getElementById('listOfExpenses');
